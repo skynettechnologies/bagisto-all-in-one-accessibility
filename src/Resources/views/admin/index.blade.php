@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>All In One Accessibility Bagisto</title>
   <meta name="description" content="Bagisto App" />
-  <!-- <link rel="stylesheet" href="https://timeorganizer.skynettechnologies.us/bitrix/css/bootstrap.min.css"> -->
-  <!-- <link href="https://timeorganizer.skynettechnologies.us/bitrix/css/style.css?4=8" rel="stylesheet" /> -->
   <link rel="stylesheet" href="{{ asset('themes/default/assets/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ asset('themes/default/assets/css/style.css?4=8') }}">
 </head>
