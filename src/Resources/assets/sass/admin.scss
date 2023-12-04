@@ -1,0 +1,63 @@
+// .temp-icon {
+//     width: 48px;
+//     height: 48px;
+//     display: inline-block;
+//     background-size: cover;
+//     background-image: url("../images/logo.svg");
+// }
+// .active {
+//     .temp-icon {
+//         background-image: url("../images/logo.svg");
+//     }
+
+//     &.temp-icon {
+//         background-image: url("../images/logo.svg");
+//     }
+// }
+
+// .allinoneaccessibility-icon {
+//     background-image: url("../images/logo.min.svg");
+// }
+
+
+// .allinoneaccessibility-icon {
+//     background-image: url("../images/logo copy 4.png");
+//     width: 45px;
+//     height: 45px;
+//     opacity: 0.6;
+//     margin-left: 4px !important;
+// }
+
+// .active {
+//     .allinoneaccessibility-icon {
+//         opacity: 1;
+//         background-image: url("../images/logo copy 4.png");
+//     }
+// }
+
+
+.allinoneaccessibility-icon {
+    background-image: url("../images/logo copy 4.png");
+  }
+  
+  .menu-item {
+    .allinoneaccessibility-icon {
+      filter: grayscale(100%);
+      height: 48px;
+      width: 48px;
+    }
+  }
+  
+  .action {
+    .allinoneaccessibility-icon {
+      filter: drop-shadow(10px 10px 10px #7D919A) brightness(0%);
+      height: 24px;
+      width: 24px;
+    }
+  }
+  
+  .active {
+    .allinoneaccessibility-icon, &.allinoneaccessibility-icon {
+      filter: invert(46%) sepia(100%) saturate(3324%) hue-rotate(177deg) brightness(97%) contrast(89%);
+    }
+  }
