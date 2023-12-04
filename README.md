@@ -93,9 +93,7 @@ Add package's namespace to the psr-4 section in the ```composer.json``` file loc
 
 ```json
 "autoload": {
-    ...
-    "psr-4": {
-        // Other PSR-4 namespaces
+"psr-4": {    
         "SkynetTechnologies\\AllinOneAccessibility\\": "packages/SkynetTechnologies/AllinOneAccessibility/src"
     }
 }
