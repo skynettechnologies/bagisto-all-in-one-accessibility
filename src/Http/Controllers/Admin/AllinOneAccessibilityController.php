@@ -76,7 +76,7 @@ class AllinOneAccessibilityController extends Controller
             'icon_size' => $data['icon_size'],
         ]);
 
-        return redirect('/admin/allinoneaccessibility')->with('success', 'Data added successfully');
+        return redirect('/admin/allinoneaccessibility')->with('success', 'Data saved successfully');
     }
 
     /**
@@ -100,7 +100,7 @@ class AllinOneAccessibilityController extends Controller
     {
         $data = AllinOneAccessibility::find($id);
         $data->update($request->all());
-        return redirect('/admin/allinoneaccessibility')->with('success', 'Data added successfully');
+        return redirect('/admin/allinoneaccessibility')->with('success', 'Data updated successfully');
 
     }
 
