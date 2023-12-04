@@ -1,4 +1,4 @@
-# bagisto-all-in-one-accessibility
+# All in One Accessibility: Bagisto Extension
 
 [All in One Accessibility](https://www.skynettechnologies.com/all-in-one-accessibility) extension improves Bagisto website ADA compliance and browser experience for ADA, WCAG 2.1, 2.2, Section 508, Australian DDA, European EAA EN 301 549, UK Equality Act (EA), Israeli Standard 5568, California Unruh, Ontario AODA, Canada ACA, German BITV, and France RGAA Standards.
 
