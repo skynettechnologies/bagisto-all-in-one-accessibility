@@ -144,14 +144,9 @@ You can configure All in One Accessibility via Admin:
 Admin > Settings > All in One Accessibility
 ```
 
-## Support
-For any kind of queries/support please Email us at [Skynet Technologies Support](mailto:hello@skynettechnologies.com)
-
-
 ## Documentation
 
 [All in One Accessibility - User Guide](https://www.dropbox.com/s/de41n4xm9zjwxix/All-in-One-Accessibility-PRO-App-Usage-and-Functionality.pdf?dl=0)
-
 
 ## Screenshots
 
@@ -166,3 +161,6 @@ For any kind of queries/support please Email us at [Skynet Technologies Support]
 ## Video
 
 [![All in One Accessibility](https://img.youtube.com/vi/czwC0PKIqkc/0.jpg)](https://www.youtube.com/watch?v=czwC0PKIqkc)
+
+## Support
+For any kind of queries/support please Email us at [Skynet Technologies Support](mailto:hello@skynettechnologies.com)
