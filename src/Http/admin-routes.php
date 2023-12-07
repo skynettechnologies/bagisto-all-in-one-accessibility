@@ -7,7 +7,7 @@ Route::group([
         'middleware'    => ['web', 'admin']
     ], function () {
 
-        Route::get('', 'SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController@index')->defaults('_config', [
+        Route::get('/allinoneaccessibility', 'SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController@index')->defaults('_config', [
             'view' => 'allinoneaccessibility::admin.index',
         ])->name('admin.allinoneaccessibility.index');
 
