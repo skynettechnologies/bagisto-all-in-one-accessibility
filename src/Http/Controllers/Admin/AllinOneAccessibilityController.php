@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class AllinOneAccessibilityController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    
+
     /**
      * Contains route related configuration
      *
@@ -66,17 +66,25 @@ class AllinOneAccessibilityController extends Controller
     {
         $validatedData = $request->validate([
             'license_key' => 'required',
+            'color_code' => 'required',
+            'icon_position' => 'required',
         ]);
-        $data = $request->all();
-        AllinOneAccessibility::create([
-            'license_key' => $data['license_key'],
-            'color_code' => $data['color_code'],
-            'icon_position' => $data['icon_position'],
-            'icon_type' => $data['icon_type'],
-            'icon_size' => $data['icon_size'],
-        ]);
+        if ($validatedData) {
+            $data = $request->all();
+            AllinOneAccessibility::create([
+                'license_key' => $data['license_key'],
+                'color_code' => $data['color_code'],
+                'icon_position' => $data['icon_position'],
+                'icon_type' => $data['icon_type'],
+                'icon_size' => $data['icon_size'],
+            ]);
 
-        return redirect('/admin/allinoneaccessibility')->with('success', 'Data saved successfully');
+            return redirect('/admin/allinoneaccessibility')->with('success', 'Data saved successfully');
+        } else {
+            return redirect('/admin/allinoneaccessibility')->with('fail', 'Please fill the License Key, Color Code, Icon Position');
+        }
+
+
     }
 
     /**
@@ -112,6 +120,6 @@ class AllinOneAccessibilityController extends Controller
      */
     public function destroy($id)
     {
-        
+
     }
 }
