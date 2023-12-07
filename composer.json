@@ -1,6 +1,6 @@
 {
     "name": "skynettechnologies/bagisto-all-in-one-accessibility",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "type": "bagisto-extension",
     "description": "Quick Web Accessibility Implementation with All In One Accessibility!",
     "keywords": [
@@ -32,6 +32,9 @@
         }
     },
     "scripts": {
+        "post-root-package-install": [
+            "php artisan make:migration create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
