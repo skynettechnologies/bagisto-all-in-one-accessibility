@@ -3,6 +3,8 @@ namespace SkynetTechnologies\AllinOneAccessibility\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use SkynetTechnologies\AllinOneAccessibility\Models\AllinOneAccessibility;
 
 /**
@@ -21,17 +23,28 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $scriptParameters = AllinOneAccessibility::first();
+        if (!Schema::hasTable('aioa')) {
+            // Code to create table
+            Schema::create('aioa', function (Blueprint $table) {
+                $table->id();
+                $table->string('license_key')->nullable();
+                $table->string('color_code')->nullable();
+                $table->string('icon_position')->nullable();
+                $table->string('icon_type')->nullable();
+                $table->string('icon_size')->nullable();
+                $table->timestamps();
+            });
+        } else {
+
+        }
+        $scriptParameters = AllinOneAccessibility::first();
 
         // dd("parameters :",$scriptParameters);
         // Event::listen('bagisto.admin.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
         //     $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
         // });
-
-        
-
-        // Event::listen('bagisto.shop.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
-        //     $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
-        // });
+        Event::listen('bagisto.shop.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
+            $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
+        });
     }
 }
