@@ -68,7 +68,7 @@
                     <div class="mb-3 row" id="colorcode_html">
                       <label for="inputPassword" class="col-sm-3 col-form-label">Hex color code:</label>
                       <div class="col-sm-9">
-                        <input type="text" name="color_code" class="form-control" id="colorcode"
+                        <input type="text" name="color_code" class="form-control" id="color_code"
                           value="{{ isset($item) ? $item->color_code : '' }}" />
                         <div class="form-text">You can customize the ADA Widget color. For example: FF5733</div>
                       </div>
@@ -530,12 +530,12 @@
           }
         })
       }
-      $('#license_key,#colorcode').change(function () {
+      $('#license_key,#color_code').change(function () {
         var license_key = $("#license_key").val();
-        var colorcode = $("#colorcode").val();
+        var color_code = $("#color_code").val();
       })
-      $('input[name="position"]').change(function () {
-        var icon_position = document.querySelector('input[name="position"]:checked').value;
+      $('input[name="icon_position"]').change(function () {
+        var icon_position = document.querySelector('input[name="icon_position"]:checked').value;
       });
       $('input[name="icon_type"]').change(function () {
         var aioa_icon_type = document.querySelector('input[name="icon_type"]:checked').value;
