@@ -21,14 +21,17 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $scriptParameters = AllinOneAccessibility::first();
+        // $scriptParameters = AllinOneAccessibility::first();
 
         // dd("parameters :",$scriptParameters);
         // Event::listen('bagisto.admin.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
         //     $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
         // });
-        Event::listen('bagisto.shop.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
-            $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
-        });
+
+        
+
+        // Event::listen('bagisto.shop.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
+        //     $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
+        // });
     }
 }
