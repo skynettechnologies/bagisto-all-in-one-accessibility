@@ -128,11 +128,6 @@ Publish assets for All in One Accessibility extension by running the below comma
 php artisan vendor:publish --tag=public --force
 ```
 
-Run the following command to create the tables in your database for All in One Accessibility extension:
-```
-php artisan migrate
-```
-
 ## Configurations
 
 You can configure All in One Accessibility via Admin:

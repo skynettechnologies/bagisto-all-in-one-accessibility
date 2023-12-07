@@ -16,7 +16,7 @@ require("laravel-mix-merge-manifest");
 const inProduction = mix.inProduction()
 
 const publicPath = inProduction
-    ? 'publishable/assets'
+    ? '../../../public/themes/default/assets'//'publishable/assets'
     : '../../../public/themes/default/assets'
 
 mix.setPublicPath(publicPath).mergeManifest();
