@@ -1,6 +1,6 @@
 {
     "name": "skynettechnologies/bagisto-all-in-one-accessibility",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "type": "bagisto-extension",
     "description": "Quick Web Accessibility Implementation with All In One Accessibility!",
     "keywords": [
@@ -31,29 +31,6 @@
 
         }
     },
-    "scripts": {
-        "post-root-package-install": [
-            "@php artisan migrate create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations"
-        ],
-        "post-autoload-dump": [
-            "@php artisan migrate create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations",
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
-        ],
-        "post-create-project-cmd": [
-            "@php artisan migrate create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations"
-        ],
-        "post-install-cmd": [
-            "@php artisan migrate create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations",
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "@php artisan optimize"
-        ],
-        "post-update-cmd": [
-            "@php artisan migrate create_aioa_table --path=vendor/skynettechnologies/bagisto-all-in-one-accessibility/src/Database/Migrations",
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "@php artisan optimize"
-        ]
-    },
     "extra": {
         "laravel": {
             "dont-discover": [],
@@ -64,5 +41,6 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "license": "MIT"
 }
