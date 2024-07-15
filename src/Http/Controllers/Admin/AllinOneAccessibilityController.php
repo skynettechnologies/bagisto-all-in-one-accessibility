@@ -79,9 +79,36 @@ class AllinOneAccessibilityController extends Controller
                 'icon_size' => $data['icon_size'],
             ]);
 
+            /* Start Save widget Settings on Dashboard */
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://ada.skynettechnologies.us/api/widget-setting-update-platform',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array(
+                    'u' => $request->getHttpHost(),
+                    'widget_position' => (!empty($data['icon_position']) ? $data['icon_position'] : ""),
+                    'widget_color_code' => (!empty($data['color_code']) ? $data['color_code'] : ""),
+                    'widget_icon_type' => (!empty($data['icon_type']) ? $data['icon_type'] : "aioa-icon-type-1"),
+                    'widget_icon_size' => (!empty($data['icon_size']) ? $data['icon_size'] : "aioa-medium-icon")
+                ),
+            )
+            );
+            $response = curl_exec($curl);
+            curl_close($curl);
+
             return redirect('/admin/allinoneaccessibility')->with('success', 'Data saved successfully');
+
         } else {
-            return redirect('/admin/allinoneaccessibility')->with('fail', 'Please fill the License Key, Color Code, Icon Position');
+            return redirect('/admin/allinoneaccessibility')->with('success', 'Please fill the License Key, Color Code, Icon Position');
+
+            // return redirect('/admin/allinoneaccessibility')->with('fail', 'Please fill the License Key, Color Code, Icon Position');
         }
 
 

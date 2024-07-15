@@ -46,5 +46,9 @@ class EventServiceProvider extends ServiceProvider
         Event::listen('bagisto.shop.layout.head', function ($viewRenderEventManager) use ($scriptParameters) {
             $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
         });
+
+        Event::listen('bagisto.shop.layout.body.after', function ($viewRenderEventManager) use ($scriptParameters) {
+            $viewRenderEventManager->addTemplate(view('allinoneaccessibility::custom-script', ['parameters' => $scriptParameters])->render());
+        });
     }
 }
