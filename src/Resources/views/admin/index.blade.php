@@ -503,7 +503,7 @@
       async function licenseKey(license_key_change) {
         var formdata = new FormData();
         formdata.append("token", license_key_change);
-        formdata.append("SERVER_NAME", "");
+        formdata.append("SERVER_NAME", window.location.origin);
         var requestOptions = {
           method: 'POST',
           body: formdata,
