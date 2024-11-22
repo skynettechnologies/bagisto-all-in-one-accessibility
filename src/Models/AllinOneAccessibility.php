@@ -4,7 +4,10 @@ namespace SkynetTechnologies\AllinOneAccessibility\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use SkynetTechnologies\AllinOneAccessibility\Contracts\AllinOneAccessibility as AllinOneAccessibilityContract;
-
+/**
+ * Summary of AllinOneAccessibility
+ * Model Parameters
+ */
 class AllinOneAccessibility extends Model implements AllinOneAccessibilityContract
 {
     protected $table = 'aioa';

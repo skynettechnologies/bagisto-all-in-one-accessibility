@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
-
+/**
+ * Create a route for adding script
+ */
 Route::group([
         'prefix'     => 'allinoneaccessibility',
         'middleware' => ['web', 'theme', 'locale', 'currency']

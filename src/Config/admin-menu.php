@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Add Menu and logo on Admin Panel
+ */
 return [
     [
         'key' => 'settings.allinoneaccessibility',

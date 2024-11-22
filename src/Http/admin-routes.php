@@ -1,7 +1,9 @@
 <?php
 use SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController;
 use Illuminate\Support\Facades\Route;
-
+/**
+ * Create Routes on Admin panel for Widget
+ */
 Route::group([
         'prefix'        => 'admin/allinoneaccessibility',
         'middleware'    => ['web', 'admin']
