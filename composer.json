@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SkynetTechnologies\\AllinOneAccessibility\\": "/src"
+            "SkynetTechnologies\\AllinOneAccessibility\\": "packages/SkynetTechnologies/AllinOneAccessibility/src"
         }
     },
     "extra": {

@@ -1,2 +1,4 @@
 node_modules
 publishable
+vendor
+composer.lock

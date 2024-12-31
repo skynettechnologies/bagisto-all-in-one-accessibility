@@ -100,7 +100,7 @@ class AioADataGrid extends DataGrid
             'license_key'  => trans('allinoneaccessibility::app.admin.datagrid.edit'),
             'method' => 'GET',
             'url'    => function ($row) {
-                return route('aadmin.allinoneaccessibility.edit', $row->id);
+                return route('admin.allinoneaccessibility.edit', $row->id);
             },
         ]);
 
@@ -123,7 +123,7 @@ class AioADataGrid extends DataGrid
     {
         $this->addMassAction([
             'license_key'   => trans('allinoneaccessibility::app.admin.datagrid.mass-update'),
-            'url'     => oute('admin.allinoneaccessibility.mass_update'),
+            'url'     => route('admin.allinoneaccessibility.mass_update'),
             'method'  => 'POST',
             'options' => [
                 [
