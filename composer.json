@@ -1,6 +1,6 @@
 {
     "name": "skynettechnologies/bagisto-all-in-one-accessibility",
-    "version": "1.0.33",
+    "version": "1.0.35",
     "type": "bagisto-extension",
     "description": "Quick Web Accessibility Implementation with All In One Accessibility!",
     "keywords": [
@@ -17,7 +17,7 @@
     ],
     "authors": [
         {
-            "name": "Rajesh Bhimani",
+            "name": "Skynet Technologies USA LLC",
             "email": "developer3@skynettechnologies.com"
         }
     ],
