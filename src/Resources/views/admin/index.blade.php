@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>All In One Accessibility Bagisto</title>
   <meta name="description" content="Bagisto App" />
-  <link rel="stylesheet" href="{{ asset('themes/default/assets/css/bootstrap.min.css') }}">
+  <!-- <link rel="stylesheet" href="{{ asset('themes/default/assets/css/bootstrap.min.css') }}"> -->
   <!-- <link rel="stylesheet" href="{{ asset('themes/default/assets/css/style.css?4=8') }}"> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://strapi.skynettechnologies.us/style.css" />
+  <link rel="stylesheet" type="text/css" href="https://sanity.skynettechnologies.us/assets/css/style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
 
 </head>
 
@@ -71,8 +73,7 @@
       <img src="https://ada.skynettechnologies.us/public/trial-assets/images/all-in-one-accessibility-logo.svg"
         alt="All in One Accessibility - Skynet Technologies"
         style="align-items: center; display: block; margin-left: auto; margin-right: auto; width: 30%;">
-
-
+      <br>
       <div class="shopify-wrap-block">
         <div class="container">
           <div class="set-width">
