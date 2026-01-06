@@ -1,0 +1,45 @@
+{
+    "name": "skynettechnologies/bagisto-all-in-one-accessibility",
+    "version": "1.0.41",
+    "type": "bagisto-extension",
+    "description": "Quick Web Accessibility Implementation with All In One Accessibility!",
+    "keywords": [
+        "bagisto",
+        "framework",
+        "laravel",
+        "accessibility",
+        "wcag",
+        "ada",
+        "All",
+        "in",
+        "One",
+        "Accessibility"
+    ],
+    "authors": [
+        {
+            "name": "Skynet Technologies USA LLC",
+            "email": "developer3@skynettechnologies.com"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "SkynetTechnologies\\AllinOneAccessibility\\": "packages/SkynetTechnologies/AllinOneAccessibility/src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [],
+            "providers": [
+                "SkynetTechnologies\\AllinOneAccessibility\\Providers\\AllinOneAccessibilityServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT"
+}
