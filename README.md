@@ -141,7 +141,7 @@ English (USA), English (UK), English (Australian), English (Canadian), English (
 **Step 1:** Run the following command from your project root:
 
 ```bash
-composer require skynettechnologies/bagisto-all-in-one-accessibility
+git clone https://github.com/skynettechnologies/bagisto-all-in-one-accessibility.git packages/SkynetTechnologies/AllinOneAccessibility
 ```
 
 **Step 2:** Add package's namespace to the psr-4 section in the ```composer.json``` file located in the root directory of your Bagisto application. Update it as follows:
@@ -154,24 +154,10 @@ composer require skynettechnologies/bagisto-all-in-one-accessibility
 }
 ```
 
-**Step 3:** Register package's service provider in the ```config/app.php``` file located in the root directory of your Bagisto application. Add the following line to the providers array:
+**Step 3:** Run the following command from your project root:
 
-```php
-<?php
-
-return [
-    
-    // Other configuration options
-
-    'providers' => ServiceProvider::defaultProviders()->merge([
-        // Other service providers
-        
-        SkynetTechnologies\AllinOneAccessibility\Providers\AllinOneAccessibilityServiceProvider::class,
-
-    ])->toArray(),
-    
-    // Other configuration options
-];
+```bash
+composer require skynettechnologies/bagisto-all-in-one-accessibility
 ```
 
 **Step 4:** Run the following commands:
