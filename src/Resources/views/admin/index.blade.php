@@ -1,4 +1,27 @@
 <?php
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+      // Handle proxy / VPN / Cloudflare
+      if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+          $ip = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+      }
+      $apiUrl = "https://ipwho.is/" . trim($ip);
+
+      $ch = curl_init($apiUrl);
+      curl_setopt_array($ch, [
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_SSL_VERIFYPEER => false,
+      ]);
+
+      $response = curl_exec($ch);
+      curl_close($ch);
+
+      $data = json_decode($response, true);
+      $isEU = $data['is_eu'] ?? 0;
+      
+      // Print value (1 or 0)
+      $iseu = $isEU ? 0 : 1;
+
  $websitename = $_SERVER['HTTP_HOST'];
 
         $arrDetails = [
@@ -23,36 +46,27 @@
             'transaction_id' => '',
             'subscr_id' => '',
             'payment_source' => '',
-            'no_required_eu' => '',
+            'no_required_eu' => $iseu,
         ];
 
 
-        $apiUrl = "https://ada.skynettechnologies.us/api/get-autologin-link";
-
-        $ch = curl_init($apiUrl);
+     // Directly call add-user-domain API
+        $secondApiUrl = "https://ada.skynettechnologies.us/api/add-user-domain";
+        $ch = curl_init($secondApiUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-            'website' => base64_encode($websitename)
-        ]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrDetails));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json'
+        ));
+
         $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            error_log('cURL error: ' . curl_error($ch));
+        }
         curl_close($ch);
 
-        $result = json_decode($response, true);
-
-        if (!isset($result['link'])) {
-
-            $secondApiUrl = "https://ada.skynettechnologies.us/api/add-user-domain";
-
-            $ch = curl_init($secondApiUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($arrDetails));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_exec($ch);
-            curl_close($ch);
-        }
+        $data = json_decode($response, true);
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,50 +1,85 @@
 <!-- packages/SkynetTechnologies/AllinOneAccessibility/resources/views/custom-script.blade.php -->
 
-<!-- @if($parameters == null)
-<script id="aioa-adawidget" src="https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js?colorcode=&token=&position="></script>
-@else
-<script id="aioa-adawidget" src="https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js?colorcode={{ $parameters->color_code }}&token={{ $parameters->license_key }}&position={{ $parameters->icon_position }}.{{ $parameters->icon_type }}.{{ $parameters->icon_size }}"></script>
-@endif
--->
+<script>
+(function () {
 
-<!-- packages/SkynetTechnologies/AllinOneAccessibility/resources/views/custom-script.blade.php -->
+    var domain = window.location.origin;
 
-@php
-    /**
-     * Detect EU using ipapi (server-side)
-     * Note: This detects based on server-seen IP.
-     */
+    var apiUrl = "https://ada.skynettechnologies.us/api/widget-settings";
 
-    $isEU = false;
+    var postData = new URLSearchParams();
+    postData.append("website_url", domain);
 
-    try {
-        $response = @file_get_contents('https://ipapi.co/json/');
-        if ($response !== false) {
-            $data = json_decode($response, true);
-            $isEU = isset($data['in_eu']) && $data['in_eu'] === true;
+    fetch(apiUrl, {
+        method: "POST",
+        body: postData
+    })
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (apiResponse) {
+
+        console.log("ADA Full API Response:", apiResponse);
+
+        var no_required_eu = "1";
+
+        if (apiResponse.Data && apiResponse.Data.no_required_eu) {
+            no_required_eu = apiResponse.Data.no_required_eu;
         }
-    } catch (\Exception $e) {
-        $isEU = false;
-    }
 
-    $baseUrl = $isEU
-        ? 'https://eu.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js'
-        : 'https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js';
-@endphp
+        console.log("ADA no_required_eu:", no_required_eu);
 
-@if ($parameters == null)
-    <script
-        id="aioa-adawidget"
-        src="{{ $baseUrl }}?colorcode=&token=&position="
-        defer>
-    </script>
-@else
-    <script
-        id="aioa-adawidget"
-        src="{{ $baseUrl }}
-            ?colorcode={{ urlencode($parameters->color_code) }}
-            &token={{ urlencode($parameters->license_key) }}
-            &position={{ urlencode($parameters->icon_position . '.' . $parameters->icon_type . '.' . $parameters->icon_size) }}"
-        defer>
-    </script>
-@endif
+        setTimeout(function () {
+
+            if (document.getElementById("aioa-adawidget")) {
+                return;
+            }
+
+            const scriptEle = document.createElement("script");
+            scriptEle.id = "aioa-adawidget";
+            scriptEle.async = true;
+
+            @if($parameters != null)
+                const licensekey = "{{ $parameters->license_key }}";
+                const color = "{{ $parameters->color_code }}";
+                const position = "{{ $parameters->icon_position }}";
+                const icon_type = "{{ $parameters->icon_type }}";
+                const icon_size = "{{ $parameters->icon_size }}";
+            @else
+                const licensekey = "";
+                const color = "";
+                const position = "";
+                const icon_type = "";
+                const icon_size = "";
+            @endif
+
+            if (no_required_eu === "0") {
+
+                // EU SCRIPT
+                scriptEle.src =
+                    "https://eu.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js" +
+                    "?colorcode=" + encodeURIComponent(color) +
+                    "&token=" + encodeURIComponent(licensekey) +
+                    "&position=" + encodeURIComponent(position);
+
+            } else {
+
+                // NON-EU SCRIPT
+                scriptEle.src =
+                    "https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js" +
+                    "?colorcode=" + encodeURIComponent(color) +
+                    "&token=" + encodeURIComponent(licensekey) +
+                    "&position=" + encodeURIComponent(position + "." + icon_type + "." + icon_size);
+            }
+
+            document.body.appendChild(scriptEle);
+
+        }, 3000);
+
+    })
+    .catch(function (error) {
+        console.error("API Error:", error);
+    });
+
+})();
+</script>
