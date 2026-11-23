@@ -34,9 +34,10 @@
     <div class="aioa-subpanel custom-size-controls" id="custom-size-controls" hidden>
         <label class="aioa-label" for="widget_icon_size_custom">Exact icon size</label>
         <div class="aioa-affix aioa-size-input" data-for="widget_icon_size_custom">
-            <input type="number" id="widget_icon_size_custom" name="widget_icon_size_custom" min="20" max="150" step="1" inputmode="numeric" value="" aria-describedby="size-range-hint" />
+            <input type="number" id="widget_icon_size_custom" name="widget_icon_size_custom" min="20" max="150" step="1" inputmode="numeric" value="" aria-describedby="size-range-hint size-error" />
             <span class="aioa-affix-text" aria-hidden="true">px</span>
         </div>
         <p class="aioa-hint" id="size-range-hint">20 - 150px are permitted values</p>
+        <p class="aioa-error" id="size-error" hidden></p>
     </div>
 </section>

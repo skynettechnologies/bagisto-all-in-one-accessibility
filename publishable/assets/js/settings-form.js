@@ -24,6 +24,19 @@
     'Enter a horizontal and a vertical position from 0 to 250 px.'
   );
 
+  // Exact icon size: a whole number from 20 to 150 px while "Set an exact size in pixels" is on
+  const SIZE_MIN = 20;
+  const SIZE_MAX = 150;
+  const sizeField = requiredFields(
+    [$('#widget_icon_size_custom')],
+    $('#size-error'),
+    'Enter an exact icon size from ' + SIZE_MIN + ' to ' + SIZE_MAX + ' px.',
+    (input) => {
+      const size = wholeNumber(input.value, null);
+      return size !== null && size >= SIZE_MIN && size <= SIZE_MAX;
+    }
+  );
+
   /* =========================================================================
    * Settings <-> form
    * ======================================================================= */
@@ -48,6 +61,7 @@
   /** Put settings into the form. state.customPosition / customSize must be set first. */
   function fill(settings) {
     positionFields.reset();
+    sizeField.reset();
     $('#custom-position-switcher').checked = state.customPosition === 1;
     $('#custom-size-switcher').checked = state.customSize === 1;
     syncCustomPosition();
@@ -94,43 +108,68 @@
   }
 
   /**
-   * Validate the form and build the parameters for widget-setting-update-platform.
-   * Shows what is wrong and returns null when the form is invalid.
+   * Check every field before saving. Every invalid field is marked in red with its message
+   * at the same time, not only the first one. Returns the problems in page order:
+   * { field, tab, name, title, text } (title and text: the toast when it is the only problem).
    */
-  function collect() {
-    const hex = parseHex($('#colorcode').value);
-    if (!hex) {
+  function validate() {
+    const problems = [];
+
+    if (!parseHex($('#colorcode').value)) {
       setColorError(true);
-      $('#colorcode').focus();
-      AIOA.ui.toast('error', 'Invalid color', 'Enter a valid hex color code, for example FF5733.');
-      return null;
-    }
-
-    // Whole pixels only (the fields never hold decimals, see wholeNumberField)
-    const widget_icon_size_custom = String(wholeNumber($('#widget_icon_size_custom').value, ''));
-
-    if (state.customSize === 1 && (widget_icon_size_custom === '' || Number(widget_icon_size_custom) < 20)) {
-      $('#widget_icon_size_custom').focus();
-      AIOA.ui.toast('error', 'Invalid icon size', 'Enter an exact icon size of at least 20 px.');
-      return null;
-    }
-
-    if (state.customSize === 1 && Number(widget_icon_size_custom) > 150) {
-      $('#widget_icon_size_custom').focus();
-      AIOA.ui.toast('error', 'Invalid icon size', 'Enter an exact icon size of 150 px or less.');
-      return null;
+      problems.push({ field: $('#colorcode'), tab: 'appearance', name: 'Widget color',
+        title: 'Invalid color', text: 'Enter a valid hex color code, for example FF5733.' });
     }
 
     // Exact position: an empty field is never saved as 0
-    if (state.customPosition === 1) {
-      const empty = positionFields.check();
-      if (empty) {
-        AIOA.tabs.select('appearance');
-        empty.focus();
-        AIOA.ui.toast('error', 'Position missing', 'Enter the exact position (0 - 250 px), or turn off "Set an exact position in pixels".');
-        return null;
-      }
+    const emptyOffset = state.customPosition === 1 ? positionFields.check() : null;
+    if (emptyOffset) {
+      problems.push({ field: emptyOffset, tab: 'appearance', name: 'Widget position',
+        title: 'Position missing', text: 'Enter the exact position (0 - 250 px), or turn off "Set an exact position in pixels".' });
     }
+
+    const badSize = state.customSize === 1 ? sizeField.check() : null;
+    if (badSize) {
+      problems.push({ field: badSize, tab: 'appearance', name: 'Icon size for desktop',
+        title: 'Invalid icon size', text: 'Enter an exact icon size from ' + SIZE_MIN + ' to ' + SIZE_MAX + ' px.' });
+    }
+
+    // Paid Features: paid plans only
+    return state.isPaid ? problems.concat(AIOA.paid.validate()) : problems;
+  }
+
+  /** "A", "A and B", "A, B and C" */
+  function joinNames(names) {
+    return names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0];
+  }
+
+  /** Point the admin at what needs a fix: the first problem's tab and field, and one toast for all of them */
+  function report(problems) {
+    const first = problems[0];
+    AIOA.tabs.select(first.tab);
+    first.field.focus();
+    if (problems.length === 1) {
+      AIOA.ui.toast('error', first.title, first.text);
+    } else {
+      AIOA.ui.toast('error', 'Check the fields marked in red', joinNames(problems.map((p) => p.name)) + ' need a fix before you can save.');
+    }
+  }
+
+  /**
+   * Validate the form and build the parameters for widget-setting-update-platform.
+   * Shows what is wrong (every problem at once) and returns null when the form is invalid.
+   */
+  function collect() {
+    const problems = validate();
+    if (problems.length) {
+      report(problems);
+      return null;
+    }
+
+    const hex = parseHex($('#colorcode').value);
+
+    // Whole pixels only (the fields never hold decimals, see wholeNumberField)
+    const widget_icon_size_custom = String(wholeNumber($('#widget_icon_size_custom').value, ''));
 
     // Exact offsets: only the chosen direction of each axis is sent
     // (empty only while the exact position is off: then 0, as before)
@@ -172,13 +211,10 @@
       widget_position_bottom: widget_position_bottom
     };
 
-    // Paid Features: paid plans only (the tab holds the saved values by then, see app.js)
+    // Paid Features: paid plans only (the tab holds the saved values by then, see app.js;
+    // it was checked in validate)
     if (state.isPaid) {
-      const paid = AIOA.paid.collect();
-      if (!paid) {
-        return null;
-      }
-      Object.assign(params, paid);
+      Object.assign(params, AIOA.paid.collect());
     }
 
     return params;
@@ -221,6 +257,9 @@
     state.customSize = on ? 1 : 0;
     $('#custom-size-controls').hidden = !on;
     $('#select_icon_size').hidden = on;
+    if (!on) {
+      sizeField.reset();
+    }
   }
 
   /* =========================================================================

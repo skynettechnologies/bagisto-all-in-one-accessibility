@@ -18,8 +18,9 @@
  *   (widget_position_vertical_center_offset_mobile is always empty).
  *
  *   AIOA.paid.fill(result)   saved values -> tab
- *   AIOA.paid.collect()      check + read the tab, or null when a link is invalid
- *                            or a value of the exact mobile position is missing
+ *   AIOA.paid.validate()     check the tab before saving: marks every invalid field and
+ *                            returns the problems (see AIOA.form.collect)
+ *   AIOA.paid.collect()      read the tab as API parameters (after validate)
  */
 (function (AIOA, document) {
   'use strict';
@@ -27,6 +28,7 @@
   const { $, checkedValue, checkRadio, positionValue, wholeNumber, wholeNumberField, requiredFields } = AIOA.util;
 
   const LINKS = ['statement_link', 'report_problem_link'];
+  const LINK_NAMES = { statement_link: 'Accessibility statement link', report_problem_link: 'Report a problem link' };
   const SWITCHES = ['widget_leave_page', 'is_sound_disabled'];
   const OFFSET_MAX = 250;
 
@@ -161,26 +163,31 @@
     syncMobile();
   }
 
-  function collect() {
-    const invalid = LINKS.filter((name) => !checkLink(name));
-    if (invalid.length) {
-      AIOA.tabs.select('paid');
-      $('#' + invalid[0]).focus();
-      AIOA.ui.toast('error', 'Invalid link', 'Check the links on the Paid Features tab.');
-      return null;
-    }
+  /**
+   * Check the tab before saving. Every invalid field is marked at the same time; returns the
+   * problems in page order, in the same shape as AIOA.form's.
+   */
+  function validate() {
+    const problems = [];
 
     // Exact mobile position: an empty field is never saved as 0
-    if (mobileExact()) {
-      const empty = mobileFields.check();
-      if (empty) {
-        AIOA.tabs.select('paid');
-        empty.focus();
-        AIOA.ui.toast('error', 'Mobile position missing', 'Enter the exact mobile position (0 - 250 px) on the Paid Features tab.');
-        return null;
-      }
+    const emptyOffset = mobileExact() ? mobileFields.check() : null;
+    if (emptyOffset) {
+      problems.push({ field: emptyOffset, tab: 'paid', name: 'Widget position for mobile (Paid Features)',
+        title: 'Mobile position missing', text: 'Enter the exact mobile position (0 - 250 px) on the Paid Features tab.' });
     }
 
+    LINKS.forEach((name) => {
+      if (!checkLink(name)) {
+        problems.push({ field: $('#' + name), tab: 'paid', name: LINK_NAMES[name] + ' (Paid Features)',
+          title: 'Invalid link', text: 'Check the links on the Paid Features tab.' });
+      }
+    });
+
+    return problems;
+  }
+
+  function collect() {
     const x = readAxis('x');
     const y = readAxis('y');
     const offset = (axis, direction) => (axis.direction === direction ? axis.value : '');
@@ -224,6 +231,7 @@
 
   AIOA.paid = {
     fill: fill,
+    validate: validate,
     collect: collect
   };
 })(window.AIOA, document);

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 (2026-11-23)
+
+Built on the All in One Accessibility settings page update of 16 November 2026.
+
+- Validation messages for a custom widget color, an exact position and an exact icon size: the field turns red and the message shows under it. The exact icon size is now checked under its field too ("Enter an exact icon size from 20 to 150 px.").
+- Saving with several invalid fields shows one summary, "Check the fields marked in red", naming every field that needs a fix.
+- The "Upgrade to Paid Plan" links (upgrade banner and the locked tabs) now open the trial form with the website, email and name filled in: `website`, `email` (only a valid one), `first_name` and `last_name` from the admin's name.
+
 ## 2.0.0 (2026-11-23)
 
 New settings page, built on the All in One Accessibility settings page v26.10.27.

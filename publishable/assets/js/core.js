@@ -146,14 +146,16 @@
     },
 
     /**
-     * Number fields that must be filled in before saving, such as an exact position
-     * ("0" is a value, an empty field is not). Returns { check, reset }:
-     *   check()  marks each empty field (red border, aria-invalid), puts message in the
-     *            error element under them and returns the first empty field, or null
+     * Fields that must hold a valid value before saving, such as an exact position ("0" is a
+     * value, an empty field is not) or an exact icon size. isValid(input) is the rule; without
+     * it a field only has to be filled in. Returns { check, reset }:
+     *   check()  marks each invalid field (red border, aria-invalid), puts message in the
+     *            error element under them and returns the first invalid field, or null
      *   reset()  clears the marks and the message
      * Once the message is shown, the marks follow what the admin types.
      */
-    requiredFields(inputs, error, message) {
+    requiredFields(inputs, error, message, isValid) {
+      const valid = isValid || ((input) => input.value.trim() !== '');
       const mark = (input, empty) => {
         input.setAttribute('aria-invalid', empty ? 'true' : 'false');
         const box = document.querySelector('[data-for="' + input.id + '"]');
@@ -167,10 +169,10 @@
         error.hidden = !text;
       };
       const check = () => {
-        const empty = inputs.filter((input) => input.value.trim() === '');
-        inputs.forEach((input) => mark(input, empty.includes(input)));
-        show(empty.length ? message : '');
-        return empty[0] || null;
+        const invalid = inputs.filter((input) => !valid(input));
+        inputs.forEach((input) => mark(input, invalid.includes(input)));
+        show(invalid.length ? message : '');
+        return invalid[0] || null;
       };
       const reset = () => {
         inputs.forEach((input) => mark(input, false));
