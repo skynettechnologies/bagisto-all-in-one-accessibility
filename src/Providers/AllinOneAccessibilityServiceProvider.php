@@ -3,74 +3,51 @@
 namespace SkynetTechnologies\AllinOneAccessibility\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
-// use SkynetTechnologies\AllinOneAccessibility\Models\AllinOneAccessibility;
+use SkynetTechnologies\AllinOneAccessibility\Contracts\AllinOneAccessibility as AllinOneAccessibilityContract;
+use SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController;
+use SkynetTechnologies\AllinOneAccessibility\Models\AllinOneAccessibility;
+use SkynetTechnologies\AllinOneAccessibility\Services\SkynetWidget;
 
 class AllinOneAccessibilityServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap services.
-     *
-     * @return void
+     * Register the configuration, the admin menu and permission, the model contract and the API service.
      */
-    public function boot()
+    public function register(): void
     {
-        // $this->publishes([
-        //     __DIR__.'/Database/Migrations/' => database_path('migrations')
-        // ], 'migrations');
+        $this->mergeConfigFrom(dirname(__DIR__).'/Config/allinoneaccessibility.php', 'allinoneaccessibility');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        $this->mergeConfigFrom(dirname(__DIR__).'/Config/admin-menu.php', 'menu.admin');
 
-        $this->loadRoutesFrom(__DIR__ . '/../Http/admin-routes.php');
+        $this->mergeConfigFrom(dirname(__DIR__).'/Config/acl.php', 'acl');
 
-        $this->loadRoutesFrom(__DIR__ . '/../Http/shop-routes.php');
+        $this->app->bind(AllinOneAccessibilityContract::class, AllinOneAccessibility::class);
 
-        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'allinoneaccessibility');
+        $this->app->singleton(SkynetWidget::class);
+    }
+
+    /**
+     * Load the migrations, routes, translations and views, and declare the publishable
+     * assets (tag "allinoneaccessibility-assets") and configuration (tag "allinoneaccessibility-config").
+     */
+    public function boot(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+
+        $this->loadRoutesFrom(__DIR__.'/../Http/admin-routes.php');
+
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'allinoneaccessibility');
+
+        $this->loadViewsFrom(__DIR__.'/../Resources/views', 'allinoneaccessibility');
 
         $this->publishes([
-            __DIR__ . '/../../publishable/assets' => public_path('themes/default/assets'),
-        ], 'public');
+            __DIR__.'/../../publishable/assets' => public_path(AllinOneAccessibilityController::ASSET_DIR),
+        ], ['allinoneaccessibility-assets', 'public']);
 
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'allinoneaccessibility');
-
-        // Event::listen('bagisto.admin.layout.head', function ($viewRenderEventManager) {
-            // $viewRenderEventManager->addTemplate('allinoneaccessibility::admin.layouts.master');
-        // });
+        $this->publishes([
+            dirname(__DIR__).'/Config/allinoneaccessibility.php' => config_path('allinoneaccessibility.php'),
+        ], 'allinoneaccessibility-config');
 
         $this->app->register(EventServiceProvider::class);
-    }
-
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->registerConfig();
-
-        $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/acl.php',
-            'acl'
-        );
-    }
-
-    /**
-     * Register package config.
-     *
-     * @return void
-     */
-    protected function registerConfig()
-    {
-        // dd("irname(__DIR__) . '/Config/admin-menu.php', ",dirname(__DIR__) . '/Config/admin-menu.php',);
-        $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/admin-menu.php',
-            'menu.admin'
-        );
-
-        $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/acl.php',
-            'acl'
-        );
     }
 }

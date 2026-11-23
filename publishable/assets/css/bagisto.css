@@ -1,0 +1,12 @@
+/**
+ * All in One Accessibility settings
+ * bagisto.css
+ *
+ * Fits the settings page into the Bagisto admin layout. Loaded last.
+ */
+
+/* Toasts: below the fixed admin header, above its menus */
+.aioa-app .aioa-toasts { top: 78px; z-index: 10010; }
+
+/* Lock card: stays clear of the fixed admin header while the tab scrolls */
+.aioa-app .aioa-lock-card { top: 86px; }

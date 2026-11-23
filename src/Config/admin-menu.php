@@ -1,13 +1,15 @@
 <?php
+
 /**
- * Add Menu and logo on Admin Panel
+ * Admin menu: All in One Accessibility, a top-level item right below Dashboard.
+ * The icon class is styled by Resources/views/admin/menu-icon.blade.php.
  */
 return [
     [
-        'key' => 'settings.allinoneaccessibility',
-        'name' => 'All in One Accessibility',
+        'key' => 'allinoneaccessibility',
+        'name' => 'allinoneaccessibility::app.title',
         'route' => 'admin.allinoneaccessibility.index',
-        'sort' => 10,
-        'icon' => 'allinoneaccessibility-icon',
-    ]
+        'sort' => 1,
+        'icon' => 'icon-allinoneaccessibility',
+    ],
 ];

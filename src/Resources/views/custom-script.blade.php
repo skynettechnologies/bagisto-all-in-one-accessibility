@@ -1,85 +1,53 @@
-<!-- packages/SkynetTechnologies/AllinOneAccessibility/resources/views/custom-script.blade.php -->
+{{--
+    All in One Accessibility widget, added to every storefront page
+    (event bagisto.shop.layout.body.after, see Providers/EventServiceProvider.php).
 
+    The settings live at Skynet Technologies (saved from Admin > All in One
+    Accessibility). This script reads them for the store's domain, then loads the EU
+    or the non-EU widget script with the saved color, position, icon type and size.
+--}}
 <script>
-(function () {
-
-    var domain = window.location.origin;
-
-    var apiUrl = "https://ada.skynettechnologies.us/api/widget-settings";
-
-    var postData = new URLSearchParams();
-    postData.append("website_url", domain);
-
-    fetch(apiUrl, {
-        method: "POST",
-        body: postData
-    })
-    .then(function (response) {
-        return response.json();
-    })
-    .then(function (apiResponse) {
-
-        console.log("ADA Full API Response:", apiResponse);
-
-        var no_required_eu = "1";
-
-        if (apiResponse.Data && apiResponse.Data.no_required_eu) {
-            no_required_eu = apiResponse.Data.no_required_eu;
+    (function () {
+        if (document.getElementById('aioa-adawidget')) {
+            return;
         }
 
-        console.log("ADA no_required_eu:", no_required_eu);
+        var token = @json($token ?? '');
+        var body = new URLSearchParams();
 
-        setTimeout(function () {
+        body.append('website_url', window.location.hostname);
 
-            if (document.getElementById("aioa-adawidget")) {
-                return;
-            }
+        fetch(@json(config('allinoneaccessibility.api_base') . 'widget-settings'), { method: 'POST', body: body })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (response) {
+                var data = (response && response.Data) || {};
+                var isEu = String(data.no_required_eu) === '0';
+                var color = data.widget_color_code || '';
+                var position = String(data.widget_position || 'bottom_right').replace(/^middel_/, 'middle_');
+                var iconType = data.widget_icon_type || 'aioa-icon-type-1';
+                var iconSize = data.widget_icon_size || 'aioa-default-icon';
 
-            const scriptEle = document.createElement("script");
-            scriptEle.id = "aioa-adawidget";
-            scriptEle.async = true;
+                setTimeout(function () {
+                    if (document.getElementById('aioa-adawidget')) {
+                        return;
+                    }
 
-            @if($parameters != null)
-                const licensekey = "{{ $parameters->license_key }}";
-                const color = "{{ $parameters->color_code }}";
-                const position = "{{ $parameters->icon_position }}";
-                const icon_type = "{{ $parameters->icon_type }}";
-                const icon_size = "{{ $parameters->icon_size }}";
-            @else
-                const licensekey = "";
-                const color = "";
-                const position = "";
-                const icon_type = "";
-                const icon_size = "";
-            @endif
+                    var script = document.createElement('script');
 
-            if (no_required_eu === "0") {
+                    script.id = 'aioa-adawidget';
+                    script.async = true;
+                    script.src = (isEu ? @json(config('allinoneaccessibility.widget_script_eu')) : @json(config('allinoneaccessibility.widget_script')))
+                        + '?colorcode=' + encodeURIComponent(color)
+                        + '&token=' + encodeURIComponent(token)
+                        + '&position=' + encodeURIComponent(isEu ? position : position + '.' + iconType + '.' + iconSize);
 
-                // EU SCRIPT
-                scriptEle.src =
-                    "https://eu.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js" +
-                    "?colorcode=" + encodeURIComponent(color) +
-                    "&token=" + encodeURIComponent(licensekey) +
-                    "&position=" + encodeURIComponent(position);
-
-            } else {
-
-                // NON-EU SCRIPT
-                scriptEle.src =
-                    "https://www.skynettechnologies.com/accessibility/js/all-in-one-accessibility-js-widget-minify.js" +
-                    "?colorcode=" + encodeURIComponent(color) +
-                    "&token=" + encodeURIComponent(licensekey) +
-                    "&position=" + encodeURIComponent(position + "." + icon_type + "." + icon_size);
-            }
-
-            document.body.appendChild(scriptEle);
-
-        }, 3000);
-
-    })
-    .catch(function (error) {
-        console.error("API Error:", error);
-    });
-
-})();
+                    document.body.appendChild(script);
+                }, 3000);
+            })
+            .catch(function (error) {
+                console.error('All in One Accessibility: could not load the widget settings.', error);
+            });
+    })();
 </script>

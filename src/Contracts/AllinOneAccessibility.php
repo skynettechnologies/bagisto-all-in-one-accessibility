@@ -2,6 +2,4 @@
 
 namespace SkynetTechnologies\AllinOneAccessibility\Contracts;
 
-interface AllinOneAccessibility
-{
-}
+interface AllinOneAccessibility {}

@@ -1,21 +1,21 @@
 <?php
-use SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController;
+
 use Illuminate\Support\Facades\Route;
+use SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController;
+use Webkul\Core\Http\Middleware\NoCacheMiddleware;
+
 /**
- * Create Routes on Admin panel for Widget
+ * Admin routes: the settings page and the AJAX router it calls.
+ * Both are listed in Config/acl.php, so only admins with the
+ * "All in One Accessibility" permission reach them.
  */
 Route::group([
-        'prefix'        => 'admin/allinoneaccessibility',
-        'middleware'    => ['web', 'admin']
-    ], function () {
+    'prefix' => config('app.admin_url').'/allinoneaccessibility',
+    'middleware' => array_filter(['web', 'admin', class_exists(NoCacheMiddleware::class) ? NoCacheMiddleware::class : null]),
+], function () {
+    Route::get('', [AllinOneAccessibilityController::class, 'index'])
+        ->name('admin.allinoneaccessibility.index');
 
-        Route::get('', 'SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin\AllinOneAccessibilityController@index')->defaults('_config', [
-            'view' => 'allinoneaccessibility::admin.index',
-        ])->name('admin.allinoneaccessibility.index');
-
-        Route::get('/allinoneaccessibility', [AllinOneAccessibilityController::class, 'admin.allinoneaccessibility.index']);
-        Route::get('/allinoneaccessibility', [AllinOneAccessibilityController::class, 'index']);
-        Route::post('/store', [AllinOneAccessibilityController::class, 'store'])->name('admin.aioa.store');
-        Route::post('/update/{id}', [AllinOneAccessibilityController::class, 'update'])->name('aioa.update');
-
+    Route::post('route', [AllinOneAccessibilityController::class, 'route'])
+        ->name('admin.allinoneaccessibility.route');
 });

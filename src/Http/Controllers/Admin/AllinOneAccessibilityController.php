@@ -2,175 +2,149 @@
 
 namespace SkynetTechnologies\AllinOneAccessibility\Http\Controllers\Admin;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use SkynetTechnologies\AllinOneAccessibility\Models\AllinOneAccessibility;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\View\View;
+use SkynetTechnologies\AllinOneAccessibility\Services\SkynetWidget;
 
 class AllinOneAccessibilityController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    /**
+     * Folder under public/ that holds the published assets.
+     */
+    public const ASSET_DIR = 'vendor/allinoneaccessibility';
 
     /**
-     * Contains route related configuration
-     *
-     * @var array
+     * Stylesheets in cascade order.
      */
-    protected $_config;
+    protected const STYLES = [
+        'tokens.css',     // colors and sizes, light + dark theme (follows the Bagisto admin dark mode)
+        'base.css',       // reset, typography, page layout, header (scoped to .aioa-app)
+        'components.css', // buttons, cards, fields, toasts, loader
+        'banners.css',    // plan notices (free / paid) and the site line
+        'settings.css',   // color, widget size, position, icon type / size, save bar
+        'tabs.css',       // tabs and the free plan lock overlay
+        'paid.css',       // Paid Features tab: links, switches, mobile position
+        'score.css',      // Accessibility Score tab
+        'responsive.css', // phone overrides
+        'bagisto.css',    // fits the page into the Bagisto admin layout
+    ];
+
+    /**
+     * Scripts in dependency order. They are loaded one after another once the
+     * Bagisto admin Vue app has mounted the page (see views/admin/index.blade.php).
+     */
+    protected const SCRIPTS = [
+        'core.js',          // namespace, config, state, helpers, API calls
+        'ui.js',            // toasts, busy buttons, view switching
+        'tabs.js',          // Appearance Design / Paid Features / Accessibility Score tabs
+        'plan.js',          // free / paid notices, site line, tabs for the plan
+        'paid-features.js', // Paid Features tab: links, switches, widget position for mobile
+        'score.js',         // Accessibility Score tab (scan results)
+        'settings-form.js', // read and fill the settings form, color picker
+        'save.js',          // "Save Changes"
+        'dashboard.js',     // paid plan "Dashboard" button (sign-in link from check-website)
+        'app.js',           // loads the website (registers it once when new) and starts the page
+    ];
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('admin');
-
-        $this->_config = request('_config');
-    }
+    public function __construct(protected SkynetWidget $widget) {}
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\View\View
+     * Settings page.
      */
-    public function index()
+    public function index(): View
     {
-        // return view($this->_config['view']);
+        $admin = auth()->guard('admin')->user();
 
-        $aioaData = AllinOneAccessibility::all();
-        return view($this->_config['view'], ['aioaData' => $aioaData]);
-
-        // return view('allinoneaccessibility::admin.index', ['aioaData' => $aioaData]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        return view($this->_config['view']);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'license_key' => 'required',
-            'color_code' => 'required',
-            'icon_position' => 'required',
+        return view('allinoneaccessibility::admin.index', [
+            'aioa' => config('allinoneaccessibility'),
+            'iconBase' => asset(self::ASSET_DIR.'/images/icons').'/',
+            'styles' => array_map(fn ($file) => $this->assetUrl('css/'.$file), self::STYLES),
+            'scripts' => array_map(fn ($file) => $this->assetUrl('js/'.$file), self::SCRIPTS),
+            'assetsPublished' => is_file(public_path(self::ASSET_DIR.'/js/core.js')),
+            'boot' => [
+                'domain' => $this->websiteDomain(),
+                'name' => (string) ($admin->name ?? ''),
+                'email' => (string) ($admin->email ?? ''),
+                'iconBase' => asset(self::ASSET_DIR.'/images/icons').'/',
+                'defaultColor' => config('allinoneaccessibility.default_color'),
+                'routeUrl' => route('admin.allinoneaccessibility.route'),
+                'csrfToken' => csrf_token(),
+                'apiUpdateUrl' => config('allinoneaccessibility.api_base').'widget-setting-update-platform',
+                'geoApiUrl' => config('allinoneaccessibility.geo_api'),
+            ],
         ]);
-        if ($validatedData) {
-            $data = $request->all();
-            AllinOneAccessibility::create([
-                'license_key' => $data['license_key'],
-                'color_code' => $data['color_code'],
-                'icon_position' => $data['icon_position'],
-                'icon_type' => $data['icon_type'],
-                'icon_size' => $data['icon_size'],
-            ]);
+    }
 
-            /* Start Save widget Settings on Dashboard */
-            $curl = curl_init();
+    /**
+     * AJAX router of the settings page (POST ?action=<name>, JSON answers), limited to this
+     * store's own website domain; the page never sends another one.
+     */
+    public function route(Request $request): JsonResponse
+    {
+        $fields = [];
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://ada.skynettechnologies.us/api/widget-setting-update-platform',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => array(
-                    'u' => $request->getHttpHost(),
-                    'widget_position' => (!empty($data['icon_position']) ? $data['icon_position'] : ""),
-                    'widget_color_code' => (!empty($data['color_code']) ? $data['color_code'] : ""),
-                    'widget_icon_type' => (!empty($data['icon_type']) ? $data['icon_type'] : "aioa-icon-type-1"),
-                    'widget_icon_size' => (!empty($data['icon_size']) ? $data['icon_size'] : "aioa-medium-icon")
-                ),
-            )
-            );
-            $response = curl_exec($curl);
-            curl_close($curl);
-
-            return redirect('/admin/allinoneaccessibility')->with('success', 'Data saved successfully');
-
-        } else {
-            return redirect('/admin/allinoneaccessibility')->with('success', 'Please fill the License Key, Color Code, Icon Position');
-
-            // return redirect('/admin/allinoneaccessibility')->with('fail', 'Please fill the License Key, Color Code, Icon Position');
+        foreach (['url', 'username', 'email', 'no_required_eu'] as $key) {
+            $value = $request->input($key);
+            $fields[$key] = is_scalar($value) ? (string) $value : '';
         }
 
+        $action = (string) $request->query('action', '');
 
+        if (! in_array($action, ['fetchWidgetSettings', 'registerDomain', 'getDashboardLink', 'fetchScanDetails'], true)) {
+            return response()->json(['error' => 'Unknown action.']);
+        }
+
+        if (SkynetWidget::normalizeDomain($fields['url']) !== $this->websiteDomain()) {
+            return response()->json(['error' => 'This website domain does not belong to this store.']);
+        }
+
+        $result = match ($action) {
+            'fetchWidgetSettings' => $this->widget->fetchWidgetSettings($fields),
+            'registerDomain' => $this->widget->registerDomain($fields),
+            'getDashboardLink' => $this->widget->getDashboardLink($fields),
+            'fetchScanDetails' => $this->widget->getScanDetails($fields),
+        };
+
+        return response()->json($result);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\View\View
+     * Normalized website domain whose settings are managed: AIOA_WEBSITE_DOMAIN, otherwise the
+     * default channel's hostname, APP_URL or the admin page's own host.
      */
-    public function edit($id)
+    protected function websiteDomain(): string
     {
-        return view($this->_config['view']);
+        $candidates = [
+            config('allinoneaccessibility.website'),
+            rescue(fn () => core()->getDefaultChannel()?->hostname, null, false),
+            config('app.url'),
+            request()->getHost(),
+        ];
+
+        foreach ($candidates as $candidate) {
+            $domain = SkynetWidget::normalizeDomain((string) $candidate);
+
+            if ($domain !== '') {
+                return $domain;
+            }
+        }
+
+        return '';
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Public URL of a published asset with a version stamp (file modified time), so
+     * browsers load the latest CSS / JS after an update.
      */
-    public function update(Request $request, $id)
+    protected function assetUrl(string $path): string
     {
-        $data = AllinOneAccessibility::find($id);
-        $data->update($request->all());
+        $file = public_path(self::ASSET_DIR.'/'.$path);
 
-            /* Start Save widget Settings on Dashboard */
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://ada.skynettechnologies.us/api/widget-setting-update-platform',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => array(
-                    'u' => $request->getHttpHost(),
-                    'widget_position' => (!empty($data['icon_position']) ? $data['icon_position'] : ""),
-                    'widget_color_code' => (!empty($data['color_code']) ? $data['color_code'] : ""),
-                    'widget_icon_type' => (!empty($data['icon_type']) ? $data['icon_type'] : "aioa-icon-type-1"),
-                    'widget_icon_size' => (!empty($data['icon_size']) ? $data['icon_size'] : "aioa-medium-icon")
-                ),
-            )
-            );
-            $response = curl_exec($curl);
-            curl_close($curl);
-        return redirect('/admin/allinoneaccessibility')->with('success', 'Data updated successfully');
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-
+        return asset(self::ASSET_DIR.'/'.$path).'?v='.(is_file($file) ? filemtime($file) : 1);
     }
 }
