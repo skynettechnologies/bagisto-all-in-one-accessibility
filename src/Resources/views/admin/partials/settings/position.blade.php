@@ -40,12 +40,12 @@
         </div>
     </fieldset>
 
-    <!-- Exact offsets (0 - 250 px) -->
+    <!-- Exact offsets (0 - 500 px) -->
     <div class="aioa-subpanel custom-position-controls" id="custom-position-controls" hidden>
         <div class="aioa-offset-row">
             <label class="aioa-label" for="custom_position_x_value">Horizontal</label>
             <div class="aioa-affix" data-for="custom_position_x_value">
-                <input type="number" min="0" max="250" step="1" inputmode="numeric" id="custom_position_x_value" value="0" aria-describedby="pos-range-hint pos-error" />
+                <input type="number" min="0" max="500" step="1" inputmode="numeric" id="custom_position_x_value" value="0" aria-describedby="pos-range-hint pos-error" />
                 <span class="aioa-affix-text" aria-hidden="true">px</span>
             </div>
             <select class="aioa-select" id="custom_position_x_dir" aria-label="Horizontal direction">
@@ -56,7 +56,7 @@
         <div class="aioa-offset-row">
             <label class="aioa-label" for="custom_position_y_value">Vertical</label>
             <div class="aioa-affix" data-for="custom_position_y_value">
-                <input type="number" min="0" max="250" step="1" inputmode="numeric" id="custom_position_y_value" value="0" aria-describedby="pos-range-hint pos-error" />
+                <input type="number" min="0" max="500" step="1" inputmode="numeric" id="custom_position_y_value" value="0" aria-describedby="pos-range-hint pos-error" />
                 <span class="aioa-affix-text" aria-hidden="true">px</span>
             </div>
             <select class="aioa-select" id="custom_position_y_dir" aria-label="Vertical direction">
@@ -64,7 +64,7 @@
                 <option value="cust-pos-to-the-upper">To the top</option>
             </select>
         </div>
-        <p class="aioa-hint" id="pos-range-hint">0 - 250px are permitted values</p>
+        <p class="aioa-hint" id="pos-range-hint">0 - 500px are permitted values</p>
         <p class="aioa-error" id="pos-error" hidden></p>
     </div>
 </section>

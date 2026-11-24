@@ -5,7 +5,7 @@
       is_mobile_position                  switch: use a separate position on phones
       is_widget_custom_position_mobile    "Set an exact position in pixels": 0 = presets, 1 = offsets
       widget_position_mobile              preset (positions in Config/allinoneaccessibility.php)
-      Exact position (0 - 250 px):
+      Exact position (0 - 500 px):
         horizontal  To the left / To the right / Center  -> widget_position_{left,right}_mobile,
                     widget_position_horizontal_center_offset_mobile (the widget puts the icon at left: 50% + offset)
         vertical    To the top / To the bottom           -> widget_position_{top,bottom}_mobile
@@ -53,7 +53,7 @@
             <div class="aioa-offset-row">
                 <label class="aioa-label" for="mobile_x_value">Horizontal</label>
                 <div class="aioa-affix" data-for="mobile_x_value">
-                    <input type="number" min="0" max="250" step="1" inputmode="numeric" id="mobile_x_value" value="0" aria-describedby="mobile-range-hint mobile-pos-error" />
+                    <input type="number" min="0" max="500" step="1" inputmode="numeric" id="mobile_x_value" value="0" aria-describedby="mobile-range-hint mobile-pos-error" />
                     <span class="aioa-affix-text" aria-hidden="true">px</span>
                 </div>
                 <select class="aioa-select" id="mobile_x_dir" aria-label="Horizontal direction (mobile)">
@@ -65,7 +65,7 @@
             <div class="aioa-offset-row">
                 <label class="aioa-label" for="mobile_y_value">Vertical</label>
                 <div class="aioa-affix" data-for="mobile_y_value">
-                    <input type="number" min="0" max="250" step="1" inputmode="numeric" id="mobile_y_value" value="0" aria-describedby="mobile-range-hint mobile-pos-error" />
+                    <input type="number" min="0" max="500" step="1" inputmode="numeric" id="mobile_y_value" value="0" aria-describedby="mobile-range-hint mobile-pos-error" />
                     <span class="aioa-affix-text" aria-hidden="true">px</span>
                 </div>
                 <select class="aioa-select" id="mobile_y_dir" aria-label="Vertical direction (mobile)">
@@ -73,7 +73,7 @@
                     <option value="bottom" selected>To the bottom</option>
                 </select>
             </div>
-            <p class="aioa-hint" id="mobile-range-hint">0 - 250px are permitted values</p>
+            <p class="aioa-hint" id="mobile-range-hint">0 - 500px are permitted values</p>
             <p class="aioa-error" id="mobile-pos-error" hidden></p>
         </div>
     </div>

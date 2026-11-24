@@ -21,11 +21,11 @@
   const positionFields = requiredFields(
     [$('#custom_position_x_value'), $('#custom_position_y_value')],
     $('#pos-error'),
-    'Enter a horizontal and a vertical position from 0 to 250 px.'
+    'Enter a horizontal and a vertical position from 0 to 500 px.'
   );
 
-  // Exact icon size: a whole number from 20 to 150 px while "Set an exact size in pixels" is on
-  const SIZE_MIN = 20;
+  // Exact icon size: a whole number from 24 to 150 px while "Set an exact size in pixels" is on
+  const SIZE_MIN = 24;
   const SIZE_MAX = 150;
   const sizeField = requiredFields(
     [$('#widget_icon_size_custom')],
@@ -125,7 +125,7 @@
     const emptyOffset = state.customPosition === 1 ? positionFields.check() : null;
     if (emptyOffset) {
       problems.push({ field: emptyOffset, tab: 'appearance', name: 'Widget position',
-        title: 'Position missing', text: 'Enter the exact position (0 - 250 px), or turn off "Set an exact position in pixels".' });
+        title: 'Position missing', text: 'Enter the exact position (0 - 500 px), or turn off "Set an exact position in pixels".' });
     }
 
     const badSize = state.customSize === 1 ? sizeField.check() : null;
@@ -346,10 +346,10 @@
   $('#custom-position-switcher').addEventListener('change', syncCustomPosition);
   $('#custom-size-switcher').addEventListener('change', syncCustomSize);
 
-  // Whole pixels only: exact offsets kept within 0 - 250 px while typing,
-  // the exact icon size (20 - 150 px) is checked when saving
+  // Whole pixels only: exact offsets kept within 0 - 500 px while typing,
+  // the exact icon size (24 - 150 px) is checked when saving
   ['#custom_position_x_value', '#custom_position_y_value'].forEach((selector) => {
-    wholeNumberField($(selector), 250);
+    wholeNumberField($(selector), 500);
   });
   wholeNumberField($('#widget_icon_size_custom'));
 

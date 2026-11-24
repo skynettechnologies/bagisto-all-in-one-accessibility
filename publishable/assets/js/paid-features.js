@@ -8,7 +8,7 @@
  *   is_mobile_position                    switch: separate position on phones
  *   is_widget_custom_position_mobile      "Set an exact position in pixels": 0 presets / 1 offsets
  *   widget_position_mobile                preset, e.g. "bottom_right"
- *   Exact position, every value a whole number of px, 0 - 250:
+ *   Exact position, every value a whole number of px, 0 - 500:
  *     horizontal  To the left / To the right / Center
  *                 widget_position_left_mobile, widget_position_right_mobile,
  *                 widget_position_horizontal_center_offset_mobile
@@ -30,7 +30,7 @@
   const LINKS = ['statement_link', 'report_problem_link'];
   const LINK_NAMES = { statement_link: 'Accessibility statement link', report_problem_link: 'Report a problem link' };
   const SWITCHES = ['widget_leave_page', 'is_sound_disabled'];
-  const OFFSET_MAX = 250;
+  const OFFSET_MAX = 500;
 
   const isSet = (value) => value !== null && value !== undefined && value !== '';
   const isOn = (value) => Number(value) === 1;
@@ -40,7 +40,7 @@
   const mobileFields = requiredFields(
     [$('#mobile_x_value'), $('#mobile_y_value')],
     $('#mobile-pos-error'),
-    'Enter a horizontal and a vertical position from 0 to 250 px.'
+    'Enter a horizontal and a vertical position from 0 to 500 px.'
   );
   const mobileExact = () => $('#is_mobile_position').checked && $('#custom-position-mobile-switcher').checked;
 
@@ -111,7 +111,7 @@
     }
   }
 
-  /** Set one axis of the exact offsets (a whole number, 0 - 250 px) */
+  /** Set one axis of the exact offsets (a whole number, 0 - 500 px) */
   function setAxis(axis, direction, value) {
     $('#mobile_' + axis + '_dir').value = direction;
     $('#mobile_' + axis + '_value').value = Math.min(Math.max(num(value), 0), OFFSET_MAX);
@@ -174,7 +174,7 @@
     const emptyOffset = mobileExact() ? mobileFields.check() : null;
     if (emptyOffset) {
       problems.push({ field: emptyOffset, tab: 'paid', name: 'Widget position for mobile (Paid Features)',
-        title: 'Mobile position missing', text: 'Enter the exact mobile position (0 - 250 px) on the Paid Features tab.' });
+        title: 'Mobile position missing', text: 'Enter the exact mobile position (0 - 500 px) on the Paid Features tab.' });
     }
 
     LINKS.forEach((name) => {
@@ -224,7 +224,7 @@
     radio.addEventListener('change', updateMobilePreview);
   });
 
-  // Whole pixels only, kept within 0 - 250 px while typing
+  // Whole pixels only, kept within 0 - 500 px while typing
   ['x', 'y'].forEach((axis) => {
     wholeNumberField($('#mobile_' + axis + '_value'), OFFSET_MAX);
   });

@@ -30,14 +30,14 @@
         </div>
     </fieldset>
 
-    <!-- Exact size (20 - 150 px) -->
+    <!-- Exact size (24 - 150 px) -->
     <div class="aioa-subpanel custom-size-controls" id="custom-size-controls" hidden>
         <label class="aioa-label" for="widget_icon_size_custom">Exact icon size</label>
         <div class="aioa-affix aioa-size-input" data-for="widget_icon_size_custom">
-            <input type="number" id="widget_icon_size_custom" name="widget_icon_size_custom" min="20" max="150" step="1" inputmode="numeric" value="" aria-describedby="size-range-hint size-error" />
+            <input type="number" id="widget_icon_size_custom" name="widget_icon_size_custom" min="24" max="150" step="1" inputmode="numeric" value="" aria-describedby="size-range-hint size-error" />
             <span class="aioa-affix-text" aria-hidden="true">px</span>
         </div>
-        <p class="aioa-hint" id="size-range-hint">20 - 150px are permitted values</p>
+        <p class="aioa-hint" id="size-range-hint">24 - 150px are permitted values</p>
         <p class="aioa-error" id="size-error" hidden></p>
     </div>
 </section>

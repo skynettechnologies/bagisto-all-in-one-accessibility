@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.2 (unreleased)
+
+- The exact widget position (desktop and mobile) now accepts 0 - 500 px, up from 0 - 250 px.
+- The exact icon size now accepts 24 - 150 px, up from 20 - 150 px.
+- README follows the master README template v26.10.27 as updated: Free vs Paid, the current language counts and American Sign Language.
+
 ## 2.0.1 (2026-11-23)
 
 Built on the All in One Accessibility settings page update of 16 November 2026.
